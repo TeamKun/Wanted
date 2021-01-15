@@ -1,0 +1,17 @@
+name: Wanted
+version: @version@
+main: dev.krmn.wanted.Wanted
+api-version: 1.16
+authors: [ krmn ]
+description: KUN GTA Plugin
+
+commands:
+  wanted:
+    usage: /<command> [player] [level]
+    description: Change wanted level
+    permission: wanted.wanted
+
+permissions:
+  wanted.wanted:
+    description: Allows you to change wanted level
+    default: op
