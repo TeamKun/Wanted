@@ -1,0 +1,34 @@
+# Set maximum value of wanted level
+max-level: 5
+# Enable mob spawning.
+spawn: true
+# Set spawning mobs.
+mobs:
+  day:
+    - creeper
+    - enderman
+    - spider
+    - witch
+    - slime
+  night:
+    - creeper
+    - enderman
+    - spider
+    - witch
+    - slime
+    - zombie
+    - skeleton
+# Set range where mobs spawn.
+range: 30
+# Set offset of spawn range.
+offset: 10
+# Set limit on amount of spawn.
+limit: 10
+
+# You can write an expression.
+# The random is number in range 0 to less than 1.
+
+# Set spawn interval.
+interval: 100 / level
+# Set amount of spawn.
+amount: level * 5 * (random + 1)

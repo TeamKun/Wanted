@@ -1,9 +1,9 @@
 package dev.krmn.wanted;
 
-import org.bukkit.Bukkit;
+import dev.krmn.wanted.event.WantedEvent;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 
 public final class Wanted extends JavaPlugin {
@@ -12,10 +12,10 @@ public final class Wanted extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         WantedLevelManager.getInstance().init(this);
         //noinspection ConstantConditions
         getServer().getPluginCommand("wanted").setExecutor(new WantedCommand());
+        registerEvents();
     }
 
     @Override
@@ -33,5 +33,12 @@ public final class Wanted extends JavaPlugin {
 
     public void reload() {
         reloadConfig();
+        WantedLevelManager.getInstance().reloadConfig(this);
+        HandlerList.unregisterAll(this);
+        registerEvents();
+    }
+
+    private void registerEvents() {
+
     }
 }

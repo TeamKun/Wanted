@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class WantedLevelManager {
-    private static final int MAX_LEVEL = 5;
+    private static final int DEFAULT_MAX_LEVEL = 5;
     private static final WantedLevelManager instance = new WantedLevelManager();
+
+    private static int maxLevel;
 
     private File levelFile;
     private FileConfiguration wantedLevel;
@@ -19,6 +21,8 @@ public class WantedLevelManager {
     }
 
     void init(Plugin plugin) {
+        reloadConfig(plugin);
+
         levelFile = new File(plugin.getDataFolder(), "wanted-level.yml");
         wantedLevel = YamlConfiguration.loadConfiguration(levelFile);
     }
@@ -31,22 +35,31 @@ public class WantedLevelManager {
         wantedLevel.save(levelFile);
     }
 
-    public int getLevel(Player target) {
-        return wantedLevel.getInt(target.getUniqueId().toString());
+    public void reloadConfig(Plugin plugin) {
+        maxLevel = plugin.getConfig().getInt("max-level", DEFAULT_MAX_LEVEL);
     }
 
-    public void setLevel(Player target, int level) {
-        if (level < 0 || level > MAX_LEVEL) {
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public double getLevel(Player target) {
+        return wantedLevel.getDouble(target.getUniqueId().toString());
+    }
+
+    public void setLevel(Player target, double level) {
+        if (level < 0 || level > maxLevel) {
             throw new IllegalArgumentException("Wanted level out of range.");
         }
         wantedLevel.set(target.getUniqueId().toString(), level);
     }
 
-    public void increment(Player target) {
-        setLevel(target, getLevel(target) + 1);
-    }
-
-    public void decrement(Player target) {
-        setLevel(target, getLevel(target) - 1);
+    public void addLevel(Player target, double level) {
+        double current = getLevel(target);
+        if (current + level > maxLevel) {
+            setLevel(target, maxLevel);
+        } else {
+            setLevel(target, current + level);
+        }
     }
 }

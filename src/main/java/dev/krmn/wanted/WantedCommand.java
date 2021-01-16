@@ -15,30 +15,28 @@ public class WantedCommand implements CommandExecutor {
         if (!label.equalsIgnoreCase("wanted")) {
             return false;
         }
-        if (!command.testPermission(sender)) {
+        if (args.length == 0) {
             return false;
         }
 
-        if (args.length > 0) {
+        if (!command.testPermission(sender)) {
             Player player = Bukkit.getPlayer(args[0]);
             if (player == null) {
                 sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません");
-                return true;
-            }
-
-            if (args.length == 1) {
+            } else if (args.length == 1) {
                 sender.sendMessage("手配度レベル：" + manager.getLevel(player));
-                return true;
-            }
-
-            try {
-                int level = Integer.parseInt(args[1]);
-                manager.setLevel(player, level);
-                return true;
-            } catch (NumberFormatException ignored) {
+            } else {
+                try {
+                    int level = Integer.parseInt(args[1]);
+                    manager.setLevel(player, level);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(ChatColor.RED + "数値を指定してください");
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(ChatColor.RED + "指定可能な最大レベルは" + manager.getMaxLevel() + "です");
+                }
             }
         }
 
-        return false;
+        return true;
     }
 }
