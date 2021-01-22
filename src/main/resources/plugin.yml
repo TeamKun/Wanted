@@ -4,10 +4,15 @@ main: dev.krmn.wanted.Wanted
 api-version: 1.16
 authors: [ krmn ]
 description: KUN GTA Plugin
+depend:
+  - VotePlugin
 
 commands:
   wanted:
-    usage: /<command> [player] [level]
+    usage: |
+      /<command> v [start | end]
+      /<command> [player] [level]
+      /<command> reload config
     description: Change wanted level
     permission: wanted.wanted
 

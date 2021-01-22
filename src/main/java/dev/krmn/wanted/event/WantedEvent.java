@@ -1,16 +1,25 @@
 package dev.krmn.wanted.event;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import dev.krmn.wanted.WantedLevelManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public abstract class WantedEvent implements Listener {
-    private final FileConfiguration config;
+    private final WantedLevelManager manager = WantedLevelManager.getInstance();
 
-    public WantedEvent(FileConfiguration config) {
-        this.config = config;
+    public WantedLevelManager getManager() {
+        return manager;
     }
 
-    public FileConfiguration getConfig() {
-        return config;
+    protected void getLevel(Player player) {
+        manager.getLevel(player);
+    }
+
+    protected void setLevel(Player player, double level) {
+        manager.setLevel(player, level);
+    }
+
+    protected void addLevel(Player player, double amount) {
+        manager.addLevel(player, amount);
     }
 }

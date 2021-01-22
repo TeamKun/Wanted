@@ -1,7 +1,11 @@
 package dev.krmn.wanted;
 
-import dev.krmn.wanted.event.WantedEvent;
+import dev.krmn.wanted.event.ChatEvent;
+import dev.krmn.wanted.event.DamageEvent;
+import dev.krmn.wanted.event.InteractEvent;
+import dev.krmn.wanted.event.WantedPlayerJoinEvent;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -13,14 +17,17 @@ public final class Wanted extends JavaPlugin {
     public void onEnable() {
         instance = this;
         WantedLevelManager.getInstance().init(this);
-        //noinspection ConstantConditions
-        getServer().getPluginCommand("wanted").setExecutor(new WantedCommand());
+
+        WantedCommand command = new WantedCommand();
+        getServer().getPluginCommand("wanted").setExecutor(command);
+        getServer().getPluginCommand("wanted").setTabCompleter(command);
         registerEvents();
     }
 
     @Override
     public void onDisable() {
         try {
+
             WantedLevelManager.getInstance().save();
         } catch (IOException e) {
             getLogger().severe(e.getMessage());
@@ -39,6 +46,10 @@ public final class Wanted extends JavaPlugin {
     }
 
     private void registerEvents() {
-
+        PluginManager manager = getServer().getPluginManager();
+        manager.registerEvents(new ChatEvent(this), this);
+        manager.registerEvents(new DamageEvent(this), this);
+        manager.registerEvents(new InteractEvent(this), this);
+        manager.registerEvents(new WantedPlayerJoinEvent(), this);
     }
 }

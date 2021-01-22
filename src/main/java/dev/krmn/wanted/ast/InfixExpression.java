@@ -31,6 +31,11 @@ public class InfixExpression implements Node {
                 return Math.pow(l, r);
         }
 
-        return 0;
+        throw new IllegalStateException("Invalid operator.");
+    }
+
+    @Override
+    public String toString() {
+        return "(" + left + " " + operator + " " + right + ")";
     }
 }

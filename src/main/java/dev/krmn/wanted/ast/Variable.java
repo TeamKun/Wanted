@@ -13,4 +13,9 @@ public class Variable implements Node {
     public double eval(Map<String, Double> variables) {
         return variables.get(name);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

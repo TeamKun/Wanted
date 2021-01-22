@@ -1,5 +1,18 @@
-# Set maximum value of wanted level
+# Set maximum value of wanted level.
 max-level: 5
+# Set amount of wanted level increase.
+level:
+  player: 1
+  mob: 0.2
+  chat: 0.3
+  item: 0.5
+# Set illegal words.
+words:
+# Set illegal items.
+items:
+  - flint_and_steel
+  - tnt
+  - lava_bucket
 # Enable mob spawning.
 spawn: true
 # Set spawning mobs.
@@ -29,6 +42,6 @@ limit: 10
 # The random is number in range 0 to less than 1.
 
 # Set spawn interval.
-interval: 100 / level
+interval: 1000 / level
 # Set amount of spawn.
-amount: level * 5 * (random + 1)
+amount: level * 5 * (random ^ 2)

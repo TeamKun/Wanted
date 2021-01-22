@@ -13,4 +13,9 @@ public class Literal implements Node {
     public double eval(Map<String, Double> variables) {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 }
