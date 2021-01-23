@@ -1,11 +1,8 @@
 package dev.krmn.wanted.event;
 
-import dev.krmn.wanted.WantedLevelManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -28,10 +25,8 @@ public class InteractEvent extends WantedEvent {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (e.useItemInHand() == Event.Result.ALLOW) {
-            if (illegalItems.contains(e.getMaterial())) {
-                addLevel(e.getPlayer(), wantedLevel);
-            }
+        if (illegalItems.contains(e.getMaterial())) {
+            addLevel(e.getPlayer(), wantedLevel);
         }
     }
 }

@@ -1,9 +1,7 @@
 package dev.krmn.wanted.event;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -16,7 +14,7 @@ public class ChatEvent extends WantedEvent {
 
     public ChatEvent(Plugin plugin) {
         FileConfiguration config = plugin.getConfig();
-        wantedLevel = config.getDouble("level.word");
+        wantedLevel = config.getDouble("level.chat");
         illegalWords = config.getStringList("words")
                 .stream()
                 .map(String::toLowerCase)

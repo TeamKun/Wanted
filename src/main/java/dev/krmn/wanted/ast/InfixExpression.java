@@ -3,9 +3,9 @@ package dev.krmn.wanted.ast;
 import java.util.Map;
 
 public class InfixExpression implements Node {
-    private String operator;
-    private Node left;
-    private Node right;
+    private final String operator;
+    private final Node left;
+    private final Node right;
 
     public InfixExpression(String operator, Node left, Node right) {
         this.operator = operator;

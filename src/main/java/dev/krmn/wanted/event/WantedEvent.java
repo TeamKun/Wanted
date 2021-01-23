@@ -11,8 +11,8 @@ public abstract class WantedEvent implements Listener {
         return manager;
     }
 
-    protected void getLevel(Player player) {
-        manager.getLevel(player);
+    protected double getLevel(Player player) {
+        return manager.getLevel(player);
     }
 
     protected void setLevel(Player player, double level) {

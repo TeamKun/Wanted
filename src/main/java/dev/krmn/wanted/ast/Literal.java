@@ -3,7 +3,7 @@ package dev.krmn.wanted.ast;
 import java.util.Map;
 
 public class Literal implements Node {
-    private double value;
+    private final double value;
 
     public Literal(double value) {
         this.value = value;

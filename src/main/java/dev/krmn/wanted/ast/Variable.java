@@ -3,7 +3,7 @@ package dev.krmn.wanted.ast;
 import java.util.Map;
 
 public class Variable implements Node {
-    private String name;
+    private final String name;
 
     public Variable(String name) {
         this.name = name;

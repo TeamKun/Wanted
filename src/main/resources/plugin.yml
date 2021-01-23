@@ -1,7 +1,7 @@
 name: Wanted
 version: @version@
 main: dev.krmn.wanted.Wanted
-api-version: 1.16
+api-version: 1.12
 authors: [ krmn ]
 description: KUN GTA Plugin
 depend:
@@ -10,7 +10,7 @@ depend:
 commands:
   wanted:
     usage: |
-      /<command> v [start | end]
+      /<command> v [start|end]
       /<command> [player] [level]
       /<command> reload config
     description: Change wanted level

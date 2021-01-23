@@ -32,16 +32,16 @@ mobs:
     - zombie
     - skeleton
 # Set range where mobs spawn.
-range: 30
+range: 20
 # Set offset of spawn range.
 offset: 10
 # Set limit on amount of spawn.
-limit: 10
+limit: 100
 
 # You can write an expression.
 # The random is number in range 0 to less than 1.
 
 # Set spawn interval.
-interval: 1000 / level
+interval: 500 / level
 # Set amount of spawn.
-amount: level * 5 * (random ^ 2)
+amount: level * 2 * (random + 1)

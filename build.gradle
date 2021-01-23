@@ -4,8 +4,6 @@ plugins {
     id 'java'
 }
 
-libsDirName = '../run/plugins'
-
 group = 'dev.krmn'
 version = '1.0-SNAPSHOT'
 
@@ -22,14 +20,22 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        url = 'https://jitpack.io'
+    }
 }
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT'
+    implementation 'com.github.TeamKun:VotePlugin:v1.2'
 }
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

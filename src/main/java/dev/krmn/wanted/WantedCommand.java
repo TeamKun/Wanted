@@ -7,13 +7,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WantedCommand implements CommandExecutor, TabCompleter {
@@ -40,8 +36,9 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
                     if (args[0].equalsIgnoreCase("v")) {
                         if (args[1].equalsIgnoreCase("start")) {
                             VoteAPI.getInstance().beginVoting(result -> {
-                                for (UUID uuid : result.getTop()) {
-                                    manager.setLevel(Bukkit.getPlayer(uuid), manager.getMaxLevel());
+                                Map<String, UUID> uniqueIdMap = result.getUniqueIdMap();
+                                for (String name : result.getTop()) {
+                                    manager.setLevel(uniqueIdMap.get(name), manager.getMaxLevel());
                                 }
                             });
                             return true;
@@ -55,7 +52,7 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
                 }
                 sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません");
             } else if (args.length == 1) {
-                sender.sendMessage("手配度レベル：" + manager.getLevel(player));
+                sender.sendMessage("手配度: " + Math.round(manager.getLevel(player) * 100) / 100f);
             } else {
                 try {
                     int level = Integer.parseInt(args[1]);
