@@ -1,6 +1,7 @@
 package dev.krmn.wanted;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -164,5 +165,17 @@ public class WantedLevelManager {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+        player.sendMessage(ChatColor.GREEN + "手配度が変更されました: " + ChatColor.WHITE + toStars(level));
+    }
+
+    private String toStars(int level) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append('★');
+        }
+        for (int i = 0; i < maxLevel - level; i++) {
+            sb.append('☆');
+        }
+        return sb.toString();
     }
 }
