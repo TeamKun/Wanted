@@ -13,6 +13,8 @@ items:
   - flint_and_steel
   - tnt
   - lava_bucket
+# Set wanted time in seconds.
+wanted-time: 60
 # Enable mob spawning.
 spawn: true
 # Set spawning mobs.
@@ -41,7 +43,7 @@ limit: 100
 # You can write an expression.
 # The random is number in range 0 to less than 1.
 
-# Set spawn interval.
-interval: 500 / level
+# Set spawn interval in seconds.
+interval: 30 / level
 # Set amount of spawn.
 amount: level * 2 * (random + 1)

@@ -1,10 +1,11 @@
 name: Wanted
 version: @version@
 main: dev.krmn.wanted.Wanted
-api-version: 1.12
+api-version: 1.15
 authors: [ krmn ]
 description: KUN GTA Plugin
 depend:
+  - GTAWantedDisplayTestPlugin
   - VotePlugin
 
 commands:

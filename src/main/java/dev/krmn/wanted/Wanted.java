@@ -15,11 +15,10 @@ import java.nio.file.Files;
 public final class Wanted extends JavaPlugin {
     private static Wanted instance;
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onEnable() {
         instance = this;
-
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "WantedLevel");
 
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {

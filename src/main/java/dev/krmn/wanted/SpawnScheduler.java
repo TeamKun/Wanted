@@ -1,14 +1,11 @@
 package dev.krmn.wanted;
 
-import com.destroystokyo.paper.entity.SentientNPC;
 import dev.krmn.wanted.ast.Node;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -63,7 +60,7 @@ public class SpawnScheduler {
             Map<String, Double> variables = new HashMap<>();
             variables.put("level", (double) level);
             variables.put("random", Math.random());
-            spawner.runTaskTimer(Wanted.getInstance(), 0, (long) intervalExp.eval(variables));
+            spawner.runTaskTimer(Wanted.getInstance(), 0, (long) (intervalExp.eval(variables) * 20));
 
             scheduleMap.put(player.getUniqueId(), spawner);
         }
@@ -105,15 +102,14 @@ public class SpawnScheduler {
         while (material != Material.AIR) {
             spawnLocation.add(0, 1, 0);
             material = spawnLocation.getBlock().getType();
-            if (material == Material.WATER || material == Material.STATIONARY_WATER ||
-                    material == Material.LAVA || material == Material.STATIONARY_LAVA) {
+            if (material == Material.WATER || material == Material.LAVA) {
                 return;
             }
         }
 
         Entity entity = world.spawnEntity(spawnLocation, entityType);
-        if (entity instanceof SentientNPC) {
-            ((SentientNPC) entity).setTarget(player);
+        if (entity instanceof Mob) {
+            ((Mob) entity).setTarget(player);
         }
     }
 }

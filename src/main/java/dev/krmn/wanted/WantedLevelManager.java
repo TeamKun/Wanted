@@ -1,28 +1,33 @@
 package dev.krmn.wanted;
 
+import net.kunmc.lab.gtawanteddisplaystarplugin.GTAWantedDisplayStarPlugin;
+import net.kunmc.lab.gtawanteddisplaystarplugin.api.Flag;
+import net.kunmc.lab.gtawanteddisplaystarplugin.api.StarDisplayAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class WantedLevelManager {
     private static final int DEFAULT_MAX_LEVEL = 5;
     private static final WantedLevelManager instance = new WantedLevelManager();
+    private static final StarDisplayAPI api = GTAWantedDisplayStarPlugin.getApi();
 
-    private static int maxLevel;
-
+    private int maxLevel;
+    private int wantedTime;
+    private final Map<UUID, BukkitRunnable> wantedTimerMap = new HashMap<>();
     private SpawnScheduler scheduler;
     private File levelFile;
     private FileConfiguration wantedLevel;
@@ -37,7 +42,7 @@ public class WantedLevelManager {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         objective = scoreboard.getObjective("wanted");
         if (objective == null) {
-            objective = scoreboard.registerNewObjective("wanted", "dummy");
+            objective = scoreboard.registerNewObjective("wanted", "dummy", "手配度");
         }
 
         reloadConfig(plugin);
@@ -66,6 +71,8 @@ public class WantedLevelManager {
                 wantedLevel.set(key, maxLevel);
             }
         }
+        wantedTime = config.getInt("wanted-time") * 20;
+        wantedTimerMap.clear();
 
         if (scheduler != null) {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -75,9 +82,9 @@ public class WantedLevelManager {
         }
         if (config.getBoolean("spawn")) {
             scheduler = new SpawnScheduler(config);
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                updateLevel(player);
-            }
+        }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            updateLevel(player);
         }
     }
 
@@ -114,6 +121,7 @@ public class WantedLevelManager {
         if (before != after) {
             updateLevel(target);
         }
+        startTimer(target, after);
     }
 
     public void setLevel(UUID target, double level) {
@@ -131,6 +139,7 @@ public class WantedLevelManager {
             if (before != after) {
                 updateLevel(player);
             }
+            startTimer(player, after);
         }
     }
 
@@ -159,22 +168,43 @@ public class WantedLevelManager {
         if (scheduler != null) {
             scheduler.schedule(player, level);
         }
-        try {
-            Method sendPluginMessage = player.getClass().getMethod("sendPluginMessage", Plugin.class, String.class, byte[].class);
-            sendPluginMessage.invoke(player, Wanted.getInstance(), "WantedLevel", ByteBuffer.allocate(4).putInt(level).array());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+
         player.sendMessage(ChatColor.GREEN + "手配度が変更されました: " + ChatColor.WHITE + toStars(level));
+    }
+
+    private void startTimer(Player player, int level) {
+        BukkitRunnable runnable = wantedTimerMap.get(player.getUniqueId());
+        if (runnable != null) {
+            runnable.cancel();
+        }
+        BukkitRunnable first = new BukkitRunnable() {
+            @Override
+            public void run() {
+                api.showStar(player, level, maxLevel, Flag.BLINK);
+                BukkitRunnable next = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        setLevel(player, 0);
+                        api.showStar(player, 0, maxLevel);
+                    }
+                };
+                next.runTaskLater(Wanted.getInstance(), 200);
+                wantedTimerMap.put(player.getUniqueId(), next);
+            }
+        };
+        first.runTaskLater(Wanted.getInstance(), wantedTime - 200);
+        wantedTimerMap.put(player.getUniqueId(), first);
+        api.showStar(player, level, maxLevel);
     }
 
     private String toStars(int level) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            sb.append('★');
-        }
-        for (int i = 0; i < maxLevel - level; i++) {
-            sb.append('☆');
+        for (int i = 0; i < maxLevel; i++) {
+            if (i < maxLevel - level) {
+                sb.append('☆');
+            } else {
+                sb.append('★');
+            }
         }
         return sb.toString();
     }
