@@ -11,6 +11,7 @@
 ## コマンド
 wanted.wanted権限が必要です。（default: op）
 - /wanted v [start|end] 投票の開始・終了（投票数が最も多いプレイヤーを手配度MAXにします）
+- /wanted [player] プレイヤーの手配度を表示
 - /wanted [player] [level] プレイヤーの手配度を指定
 - /wanted reload config 設定を再読み込み
 
