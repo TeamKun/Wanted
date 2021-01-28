@@ -26,6 +26,7 @@ Mobはoffsetからoffset+rangeの間にスポーンします。
 |words|文字列|違法な発言一覧|
 |items|アイテム|違法アイテム一覧|
 |wanted-time|秒|指名手配時間|
+|output|真偽値|チャットへの出力設定|
 |spawn|真偽値|Mobのスポーン設定|
 |mobs|Mob|昼間、夜間に湧くMob一覧|
 |range|整数|Mobがスポーンする範囲|
