@@ -85,6 +85,7 @@ public class WantedLevelManager {
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             updateLevel(player);
+            startTimer(player, (int) getLevel(player));
         }
     }
 
@@ -96,6 +97,13 @@ public class WantedLevelManager {
         if (!wantedLevel.contains(player.getUniqueId().toString())) {
             setLevel(player, 0);
         } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    api.showStar(player, 0, maxLevel);
+                    startTimer(player, (int) getLevel(player));
+                }
+            }.runTaskLater(Wanted.getInstance(), 0);
             updateLevel(player);
         }
     }
@@ -182,7 +190,7 @@ public class WantedLevelManager {
         BukkitRunnable first = new BukkitRunnable() {
             @Override
             public void run() {
-                api.showStar(player, level, maxLevel, Flag.BLINK);
+                api.showStar(player, level, maxLevel, Flag.BLINK.setValue(200));
                 BukkitRunnable next = new BukkitRunnable() {
                     @Override
                     public void run() {

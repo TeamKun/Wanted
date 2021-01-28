@@ -32,6 +32,7 @@ public final class Wanted extends JavaPlugin {
         }
 
         WantedLevelManager.getInstance().init(this);
+        isOutputEnabled = getConfig().getBoolean("output");
 
         WantedCommand command = new WantedCommand();
         getServer().getPluginCommand("wanted").setExecutor(command);

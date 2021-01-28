@@ -28,7 +28,7 @@ repositories {
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
     implementation 'com.github.TeamKun:VotePlugin:v1.2'
-    implementation 'com.github.teamkun:gtawanteddisplaystarplugin:v1.2'
+    implementation 'com.github.teamkun:gtawanteddisplaystarplugin:v2.1'
 }
 
 processResources {

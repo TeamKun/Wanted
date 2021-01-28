@@ -20,11 +20,19 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
         if (!label.equalsIgnoreCase("wanted")) {
             return false;
         }
-        if (args.length < 2) {
+        if (args.length == 0) {
             return false;
         }
 
         if (command.testPermission(sender)) {
+            if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("reload")) {
+                    Wanted.getInstance().reload();
+                    return true;
+                }
+
+                return false;
+            }
             Player player;
             switch (args[0].toLowerCase()) {
                 case "get":
@@ -45,7 +53,7 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     try {
-                        double level = Double.parseDouble(args[1]);
+                        double level = Double.parseDouble(args[2]);
                         manager.setLevel(player, level);
                     } catch (NumberFormatException e) {
                         sender.sendMessage(ChatColor.RED + "数値を指定してください");
@@ -67,8 +75,6 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
                         return false;
                     }
                     break;
-                case "reload":
-                    Wanted.getInstance().reload();
             }
         }
 
@@ -90,7 +96,7 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
                     "reload"
             ));
         } else if (args.length == 2) {
-            switch (args[1].toLowerCase()) {
+            switch (args[0].toLowerCase()) {
                 case "get":
                 case "set":
                     Bukkit.getOnlinePlayers()
