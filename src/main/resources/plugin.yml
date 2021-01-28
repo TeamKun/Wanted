@@ -12,9 +12,10 @@ commands:
   wanted:
     usage: |
       /<command> v [start|end]
-      /<command> [player] [level]
-      /<command> reload config
-    description: Change wanted level
+      /<command> get [player]
+      /<command> set [player] [level]
+      /<command> reload
+    description: Wanted command
     permission: wanted.wanted
 
 permissions:

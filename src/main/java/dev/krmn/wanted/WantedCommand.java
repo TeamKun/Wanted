@@ -20,48 +20,55 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
         if (!label.equalsIgnoreCase("wanted")) {
             return false;
         }
-        if (args.length == 0) {
+        if (args.length < 2) {
             return false;
         }
 
         if (command.testPermission(sender)) {
-            Player player = Bukkit.getPlayer(args[0]);
-            if (player == null) {
-                if (args.length > 1) {
-                    if (args[0].equalsIgnoreCase("reload") &&
-                            args[1].equalsIgnoreCase("config")) {
-                        Wanted.getInstance().reload();
+            Player player;
+            switch (args[0].toLowerCase()) {
+                case "get":
+                    player = Bukkit.getPlayer(args[1]);
+                    if (player == null) {
+                        sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません");
                         return true;
                     }
-                    if (args[0].equalsIgnoreCase("v")) {
-                        if (args[1].equalsIgnoreCase("start")) {
-                            VoteAPI.getInstance().beginVoting(result -> {
-                                Map<String, UUID> uniqueIdMap = result.getUniqueIdMap();
-                                for (String name : result.getTop()) {
-                                    manager.setLevel(uniqueIdMap.get(name), manager.getMaxLevel());
-                                }
-                            });
-                            return true;
-                        } else if (args[1].equalsIgnoreCase("end")) {
-                            VoteAPI.getInstance().endVoting();
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    sender.sendMessage("手配度: " + Math.round(manager.getLevel(player) * 100) / 100f);
+                    break;
+                case "set":
+                    if (args.length == 2) {
+                        return false;
                     }
-                }
-                sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません");
-            } else if (args.length == 1) {
-                sender.sendMessage("手配度: " + Math.round(manager.getLevel(player) * 100) / 100f);
-            } else {
-                try {
-                    int level = Integer.parseInt(args[1]);
-                    manager.setLevel(player, level);
-                } catch (NumberFormatException e) {
-                    sender.sendMessage(ChatColor.RED + "数値を指定してください");
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(ChatColor.RED + "指定可能な最大レベルは" + manager.getMaxLevel() + "です");
-                }
+                    player = Bukkit.getPlayer(args[1]);
+                    if (player == null) {
+                        sender.sendMessage(ChatColor.RED + "プレイヤーが見つかりません");
+                        return true;
+                    }
+                    try {
+                        double level = Double.parseDouble(args[1]);
+                        manager.setLevel(player, level);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(ChatColor.RED + "数値を指定してください");
+                    } catch (IllegalArgumentException e) {
+                        sender.sendMessage(ChatColor.RED + "指定可能な最大レベルは" + manager.getMaxLevel() + "です");
+                    }
+                    break;
+                case "v":
+                    if (args[1].equalsIgnoreCase("start")) {
+                        VoteAPI.getInstance().beginVoting(result -> {
+                            Map<String, UUID> uniqueIdMap = result.getUniqueIdMap();
+                            for (String name : result.getTop()) {
+                                manager.setLevel(uniqueIdMap.get(name), manager.getMaxLevel());
+                            }
+                        });
+                    } else if (args[1].equalsIgnoreCase("end")) {
+                        VoteAPI.getInstance().endVoting();
+                    } else {
+                        return false;
+                    }
+                    break;
+                case "reload":
+                    Wanted.getInstance().reload();
             }
         }
 
@@ -76,18 +83,24 @@ public class WantedCommand implements CommandExecutor, TabCompleter {
 
         List<String> result = new ArrayList<>();
         if (args.length == 1) {
-            result.addAll(Bukkit.getOnlinePlayers()
-                    .stream()
-                    .map(Player::getName)
-                    .collect(Collectors.toList()));
-            result.add("v");
-            result.add("reload");
-        } else {
-            if (args[0].equalsIgnoreCase("v")) {
-                result.add("start");
-                result.add("end");
-            } else if (args[0].equalsIgnoreCase("reload")) {
-                result.add("config");
+            result.addAll(Arrays.asList(
+                    "get",
+                    "set",
+                    "v",
+                    "reload"
+            ));
+        } else if (args.length == 2) {
+            switch (args[1].toLowerCase()) {
+                case "get":
+                case "set":
+                    Bukkit.getOnlinePlayers()
+                            .stream()
+                            .map(Player::getName)
+                            .forEach(result::add);
+                    break;
+                case "v":
+                    result.add("start");
+                    result.add("end");
             }
         }
 

@@ -15,6 +15,8 @@ import java.nio.file.Files;
 public final class Wanted extends JavaPlugin {
     private static Wanted instance;
 
+    private boolean isOutputEnabled;
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onEnable() {
@@ -52,9 +54,14 @@ public final class Wanted extends JavaPlugin {
 
     public void reload() {
         reloadConfig();
+        isOutputEnabled = getConfig().getBoolean("output");
         WantedLevelManager.getInstance().reloadConfig(this);
         HandlerList.unregisterAll(this);
         registerEvents();
+    }
+
+    public boolean isOutputEnabled() {
+        return isOutputEnabled;
     }
 
     private void registerEvents() {

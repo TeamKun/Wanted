@@ -169,7 +169,9 @@ public class WantedLevelManager {
             scheduler.schedule(player, level);
         }
 
-        player.sendMessage(ChatColor.GREEN + "手配度が変更されました: " + ChatColor.WHITE + toStars(level));
+        if (Wanted.getInstance().isOutputEnabled()) {
+            player.sendMessage(ChatColor.GREEN + "手配度が変更されました: " + ChatColor.WHITE + toStars(level));
+        }
     }
 
     private void startTimer(Player player, int level) {
