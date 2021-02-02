@@ -193,23 +193,30 @@ public class WantedLevelManager {
         if (runnable != null) {
             runnable.cancel();
         }
-        BukkitRunnable first = new BukkitRunnable() {
+        BukkitRunnable timer = new BukkitRunnable() {
             @Override
             public void run() {
-                api.showStar(player, level, maxLevel, Flag.BLINK.setValue(200));
-                BukkitRunnable next = new BukkitRunnable() {
+                BukkitRunnable blink = new BukkitRunnable() {
+                    int count = 10;
                     @Override
                     public void run() {
-                        setLevel(player, 0);
-                        api.showStar(player, 0, maxLevel);
+                        if (count == 0) {
+                            setLevel(player, 0);
+                            api.showStar(player, 0, maxLevel);
+                            cancel();
+                            return;
+                        }
+
+                        api.showStar(player, level, maxLevel, Flag.BLINK.setValue(100 + count * 20));
+                        count--;
                     }
                 };
-                next.runTaskLater(Wanted.getInstance(), 200);
-                wantedTimerMap.put(player.getUniqueId(), next);
+                blink.runTaskTimer(Wanted.getInstance(), 0, 40);
+                wantedTimerMap.put(player.getUniqueId(), blink);
             }
         };
-        first.runTaskLater(Wanted.getInstance(), wantedTime - 200);
-        wantedTimerMap.put(player.getUniqueId(), first);
+        timer.runTaskLater(Wanted.getInstance(), wantedTime - 400);
+        wantedTimerMap.put(player.getUniqueId(), timer);
         api.showStar(player, level, maxLevel);
     }
 
