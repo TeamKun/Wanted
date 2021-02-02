@@ -8,9 +8,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public final class Wanted extends JavaPlugin {
     private static Wanted instance;
@@ -22,14 +20,7 @@ public final class Wanted extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        File configFile = new File(getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            try {
-                Files.copy(getResource("config.yml"), configFile.toPath());
-            } catch (IOException e) {
-                getLogger().severe(e.getMessage());
-            }
-        }
+        saveDefaultConfig();
 
         WantedLevelManager.getInstance().init(this);
         isOutputEnabled = getConfig().getBoolean("output");
@@ -70,6 +61,6 @@ public final class Wanted extends JavaPlugin {
         manager.registerEvents(new ChatEvent(this), this);
         manager.registerEvents(new DamageEvent(this), this);
         manager.registerEvents(new InteractEvent(this), this);
-        manager.registerEvents(new PlayerEvent(), this);
+        manager.registerEvents(new PlayerEvent(this), this);
     }
 }

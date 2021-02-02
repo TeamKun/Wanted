@@ -1,30 +1,33 @@
 package dev.krmn.wanted.event;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatEvent extends WantedEvent {
-    private final double wantedLevel;
-    private final List<String> illegalWords;
+    private final Map<String, Double> illegalWords = new HashMap<>();
 
     public ChatEvent(Plugin plugin) {
         FileConfiguration config = plugin.getConfig();
-        wantedLevel = config.getDouble("level.chat");
-        illegalWords = config.getStringList("words")
-                .stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
+        ConfigurationSection words = config.getConfigurationSection("words");
+        if (words != null) {
+            words.getValues(false)
+                    .forEach((k, v) -> illegalWords.put(k.toLowerCase(), Double.parseDouble(v.toString())));
+        }
     }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if (illegalWords.stream().anyMatch(e.getMessage().toLowerCase()::contains)) {
-            addLevel(e.getPlayer(), wantedLevel);
-        }
+        illegalWords.forEach((k, v) -> {
+            String message = e.getMessage().toLowerCase();
+            if (message.contains(k)) {
+                addLevel(e.getPlayer(), v);
+            }
+        });
     }
 }

@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -175,6 +177,10 @@ public class WantedLevelManager {
         score.setScore(level);
         if (scheduler != null) {
             scheduler.schedule(player, level);
+        }
+
+        if (level == maxLevel) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, wantedTime, 1));
         }
 
         if (Wanted.getInstance().isOutputEnabled()) {

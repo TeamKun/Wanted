@@ -4,15 +4,18 @@ max-level: 5
 level:
   player: 1
   mob: 0.2
-  chat: 0.3
   item: 0.5
 # Set illegal words.
 words:
+  test: 0.3
 # Set illegal items.
 items:
   - flint_and_steel
   - tnt
   - lava_bucket
+# Set items to drop when player dies.
+drops:
+  diamond: 5
 # Set wanted time in seconds.
 wanted-time: 60
 # Enable chat output.
