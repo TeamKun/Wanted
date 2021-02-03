@@ -20,6 +20,8 @@ drops:
 wanted-time: 60
 # Enable chat output.
 output: true
+# Enable blinking acceleration.
+speed-up: true
 # Enable mob spawning.
 spawn: true
 # Set spawning mobs.

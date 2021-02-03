@@ -29,6 +29,8 @@ public class WantedLevelManager {
 
     private int maxLevel;
     private int wantedTime;
+    private boolean isOutputEnabled;
+    private boolean isSpeedUpEnabled;
     private final Map<UUID, BukkitRunnable> wantedTimerMap = new HashMap<>();
     private SpawnScheduler scheduler;
     private File levelFile;
@@ -75,6 +77,8 @@ public class WantedLevelManager {
         }
         wantedTime = config.getInt("wanted-time") * 20;
         wantedTimerMap.clear();
+        isOutputEnabled = config.getBoolean("output");
+        isSpeedUpEnabled = config.getBoolean("speed-up");
 
         if (scheduler != null) {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -183,7 +187,7 @@ public class WantedLevelManager {
             player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, wantedTime, 1));
         }
 
-        if (Wanted.getInstance().isOutputEnabled()) {
+        if (isOutputEnabled) {
             player.sendMessage(ChatColor.GREEN + "手配度が変更されました: " + ChatColor.WHITE + toStars(level));
         }
     }
@@ -196,22 +200,36 @@ public class WantedLevelManager {
         BukkitRunnable timer = new BukkitRunnable() {
             @Override
             public void run() {
-                BukkitRunnable blink = new BukkitRunnable() {
-                    int count = 10;
-                    @Override
-                    public void run() {
-                        if (count == 0) {
+                BukkitRunnable blink;
+                if (isSpeedUpEnabled) {
+                    blink = new BukkitRunnable() {
+                        int count = 10;
+
+                        @Override
+                        public void run() {
+                            if (count == 0) {
+                                setLevel(player, 0);
+                                api.showStar(player, 0, maxLevel);
+                                cancel();
+                                return;
+                            }
+
+                            api.showStar(player, level, maxLevel, Flag.BLINK.setValue(100 + count * 10));
+                            count--;
+                        }
+                    };
+                    blink.runTaskTimer(Wanted.getInstance(), 0, 40);
+                } else {
+                    api.showStar(player, level, maxLevel, Flag.BLINK.setValue(200));
+                    blink = new BukkitRunnable() {
+                        @Override
+                        public void run() {
                             setLevel(player, 0);
                             api.showStar(player, 0, maxLevel);
-                            cancel();
-                            return;
                         }
-
-                        api.showStar(player, level, maxLevel, Flag.BLINK.setValue(100 + count * 20));
-                        count--;
-                    }
-                };
-                blink.runTaskTimer(Wanted.getInstance(), 0, 40);
+                    };
+                    blink.runTaskLater(Wanted.getInstance(), 400);
+                }
                 wantedTimerMap.put(player.getUniqueId(), blink);
             }
         };

@@ -28,6 +28,7 @@ Mobはoffsetからoffset+rangeの間にスポーンします。
 |drops|アイテム:整数|ドロップアイテムと量|
 |wanted-time|秒|指名手配時間|
 |output|真偽値|チャットへの出力設定|
+|speed-up|真偽値|点滅の加速設定|
 |spawn|真偽値|Mobのスポーン設定|
 |mobs|Mob|昼間、夜間に湧くMob一覧|
 |range|整数|Mobがスポーンする範囲|
